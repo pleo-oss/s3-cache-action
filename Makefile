@@ -6,7 +6,7 @@ all: test build lint
 build: README.md dist/restore/index.js dist/save/index.js
 	./node_modules/.bin/prettier -w .
 
-dist/%/index.js: %.ts utils.ts node_modules
+dist/%/index.js: src/%.ts src/utils.ts node_modules
 	./node_modules/.bin/ncc build $< --out $(dir $@)
 
 README.md: action.yml node_modules
