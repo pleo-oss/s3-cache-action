@@ -1,9 +1,7 @@
-name: 'S3 Cache Action'
+name: S3 Cache Action
 description:
-    'Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching. It
-    works workflow runs on different branches, which is not currently possible using
-    [`actions/cache`](https://github.com/actions/cache).'
-author: 'Pleo OSS'
+    Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.
+author: Pleo OSS
 inputs:
     bucket_name:
         description:
@@ -22,7 +20,7 @@ outputs:
     hash:
         description: The repo tree hash which was used for caching
 runs:
-    using: 'node16'
-    main: 'dist/restore/index.js'
-    post: 'dist/save/index.js'
-    post-if: 'success()'
+    using: node16
+    main: dist/restore/index.js
+    post: dist/save/index.js
+    post-if: success()
