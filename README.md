@@ -55,11 +55,13 @@ that's the case.
 - uses: aws-actions/configure-aws-credentials@v1
   with:
       # See aws-actions/configure-aws-credentials docs
-- uses: 'pleo-oss/s3-cache-action@v1'
+- uses: pleo-oss/s3-cache-action@v1
   id: s3-cache
   with:
       bucket_name: my-s3-bucket
-- uses: bahmutov/npm-install@v1
+- run: make very-long-lint
+  if: steps.s3-cache.outputs.processed == 'false'
+- run: make very-long-test
   if: steps.s3-cache.outputs.processed == 'false'
 ```
 
