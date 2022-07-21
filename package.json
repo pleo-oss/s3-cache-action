@@ -17,5 +17,19 @@
         "prettier": "^2.5.1",
         "ts-jest": "^28.0.7",
         "typescript": "4.7.4"
+    },
+    "prettier": {
+        "printWidth": 100,
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": true,
+        "bracketSpacing": false,
+        "arrowParens": "always",
+        "trailingComma": "none",
+        "proseWrap": "always"
+    },
+    "jest": {
+        "preset": "ts-jest",
+        "testEnvironment": "node"
     }
 }
