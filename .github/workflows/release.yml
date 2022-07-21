@@ -1,0 +1,40 @@
+name: Release & Publish
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    release:
+        name: Run "Release Please"
+        runs-on: ubuntu-22.04
+        outputs:
+            release_created: ${{ steps.release.outputs.release_created }}
+        steps:
+            - uses: google-github-actions/release-please-action@v3
+              id: release
+              with:
+                  release-type: node
+                  package-name: '@pleo-oss/s3-cache-action'
+    publish:
+        name: Publish to GPR
+        runs-on: ubuntu-22.04
+        needs: release
+        if: ${{ needs.release.outputs.release_created }}
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16.x'
+                  registry-url: 'https://registry.npmjs.org'
+                  cache: 'yarn'
+            - run: yarn --frozen-lockfile
+            - run: make lint test
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16.x'
+                  registry-url: https://npm.pkg.github.com/
+            - run: yarn publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
