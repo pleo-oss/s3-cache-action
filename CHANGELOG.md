@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/pleo-oss/s3-cache-action/compare/v1.0.0...v1.0.0) (2022-07-21)
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([e49d04d](https://github.com/pleo-oss/s3-cache-action/commit/e49d04d6c6743b03cebdff732c720f9c523c8dbb))
+
 ## 1.0.0 (2022-07-21)
 
 
