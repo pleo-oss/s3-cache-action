@@ -1,6 +1,8 @@
 name: 'S3 Cache Action'
 description:
-    'Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.'
+    'Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching. It
+    works workflow runs on different branches, which is not currently possible using
+    [`actions/cache`](https://github.com/actions/cache).'
 author: 'Pleo OSS'
 inputs:
     bucket_name:

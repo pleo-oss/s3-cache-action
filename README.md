@@ -2,13 +2,17 @@
   🪣 ♻️ S3 Cache Action
 </h1>
 
-![](./screenshot.png)
+| First Run, Cold Cache                                                                                                                                                                                       | Next Run, Cache Hit                                                                                                                                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img width="500" alt="On the first run, the action reports no cache and the long task is done." src="https://user-images.githubusercontent.com/4643658/180269038-9f896490-619f-4fd8-b801-af01b62b1981.png"> | <img width="500" alt="On the next run, the action reports cache hit, and the long task is skipped" src="https://user-images.githubusercontent.com/4643658/180269047-417226dd-ce8f-41a6-92ee-e6ed7d279cb6.png"> |
 
 <!-- action-docs-description -->
 
 ## Description
 
-Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.
+Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching. It works
+workflow runs on different branches, which is not currently possible using
+[`actions/cache`](https://github.com/actions/cache).
 
 <!-- action-docs-description -->
 
