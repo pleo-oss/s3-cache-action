@@ -10,9 +10,7 @@
 
 ## Description
 
-Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching. It works
-workflow runs on different branches, which is not currently possible using
-[`actions/cache`](https://github.com/actions/cache).
+Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.
 
 <!-- action-docs-description -->
 
@@ -22,10 +20,10 @@ merging to the main branch, if the code was tested/linted/built on a feature bra
 
 ## How It Works
 
-It saves a `cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}` file in S3 where `treeHash` is
-the current root tree hash of the git repo (i.e. the output of `git rev-parse HEAD:`). If the GitHub
-workflow job is ran with the same state of the repository after succeeding once, you can avoid any
-work by checking the `processed` output of this action which will be set to `true`.
+It saves a `cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}` file in an S3 bucket, where
+`treeHash` is the current root tree hash of the git repo (i.e. the output of `git rev-parse HEAD:`).
+If the GitHub workflow job is ran with the same state of the repository after succeeding once, you
+can avoid any work by checking the `processed` output of this action which will be set to `true`.
 
 Since GitHub Actions do not yet support early exits from jobs, you'll need to check the value of the
 `processed` output of this action for every step in the job that you want to avoid.
