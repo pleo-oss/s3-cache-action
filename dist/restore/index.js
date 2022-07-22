@@ -10153,14 +10153,17 @@ const utils_1 = __nccwpck_require__(1314);
     const bucket = core.getInput('bucket_name', { required: true });
     const keyPrefix = core.getInput('key_prefix');
     const repo = github.context.repo;
-    const output = yield restoreS3Cache({ bucket, keyPrefix, repo });
-    // Saving key and hash in "state" which can be retrieved by the
-    // "post" run of the action (save.ts)
+    const { processed, treeHash, key } = yield restoreS3Cache({ bucket, keyPrefix, repo });
+    // Saving key and hash in "state" which can be retrieved by the "post" run of the action (save.ts)
     // https://github.com/actions/toolkit/tree/daf8bb00606d37ee2431d9b1596b88513dcf9c59/packages/core#action-state
-    core.saveState('key', output.key);
-    core.saveState('hash', output.treeHash);
-    core.setOutput('processed', output.processed);
-    core.setOutput('hash', output.treeHash);
+    core.saveState('key', key);
+    core.debug(`Saved state: ${key}`);
+    core.saveState('hash', treeHash);
+    core.debug(`Saved state: ${treeHash}`);
+    core.setOutput('processed', processed);
+    core.debug(`Set output: 'processed' - ${processed}`);
+    core.setOutput('hash', treeHash);
+    core.debug(`Set output: 'hash' - ${treeHash}`);
 }));
 function restoreS3Cache({ bucket, keyPrefix, repo }) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10230,6 +10233,7 @@ const core = __importStar(__nccwpck_require__(2186));
  */
 function fileExistsInS3({ key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: 'aws s3api head-object', [\`--bucket=${bucket}\`, \`--key=${key}\`]'`);
         return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`]);
     });
 }
@@ -10261,6 +10265,7 @@ function execIsSuccessful(commandLine, args) {
  */
 function writeLineToFile({ text, path }) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: '/bin/bash -c "echo ${text} > ${path}"'`);
         yield (0, exec_1.exec)(`/bin/bash -c "echo ${text} > ${path}"`);
     });
 }
@@ -10275,6 +10280,7 @@ exports.writeLineToFile = writeLineToFile;
  */
 function copyFileToS3({ path, key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: ''aws s3 cp', [path, \`s3://${bucket}/${key}\`]'`);
         yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`]);
     });
 }
@@ -10308,6 +10314,7 @@ exports.runAction = runAction;
  */
 function getTreeHashForCommitHash(commit) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: 'git rev-parse', [\`${commit}:\`]`);
         return execReadOutput('git rev-parse', [`${commit}:`]);
     });
 }

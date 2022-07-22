@@ -3296,7 +3296,7 @@ exports.debug = debug; // for test
  * Only runs on successful completion of the job which it's used for.
  * @see {@link https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#post}
  *
- * Uploads a cache file to the S3 bucket, if the file was not uploaded before.
+ * Uploads a cache file to the S3 bucket if the file was not uploaded before.
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -3337,20 +3337,23 @@ const utils_1 = __nccwpck_require__(314);
 (0, utils_1.runAction)(() => {
     const bucket = core.getInput('bucket_name', { required: true });
     const hash = core.getState('hash');
+    core.debug(`Restored state: 'hash' - ${hash}`);
     const key = core.getState('key');
+    core.debug(`Restored state: 'key' - ${key}`);
     return saveS3Cache({ bucket, hash, key });
 });
 function saveS3Cache({ bucket, hash, key }) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!hash || !key) {
-            core.info(`Tree hash already processed, skipping saving the cache file.`);
+            core.info(`Tree hash ${hash} already processed.`);
+            core.info('Skipping saving the cache file.');
             return;
         }
-        // The content of the file doesn't really matter,
-        // since we're only checking if the file exists
+        // The content of the file doesn't really matter, since we're only checking if the file exists
         yield (0, utils_1.writeLineToFile)({ text: hash, path: hash });
         yield (0, utils_1.copyFileToS3)({ path: hash, bucket, key });
-        core.info(`Tree hash ${hash} was processed, saved the ${key} cache file.`);
+        core.info(`Tree hash ${hash} was processed.`);
+        core.info(`Saved the ${key} cache file.`);
     });
 }
 exports.saveS3Cache = saveS3Cache;
@@ -3408,6 +3411,7 @@ const core = __importStar(__nccwpck_require__(186));
  */
 function fileExistsInS3({ key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: 'aws s3api head-object', [\`--bucket=${bucket}\`, \`--key=${key}\`]'`);
         return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`]);
     });
 }
@@ -3439,6 +3443,7 @@ function execIsSuccessful(commandLine, args) {
  */
 function writeLineToFile({ text, path }) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: '/bin/bash -c "echo ${text} > ${path}"'`);
         yield (0, exec_1.exec)(`/bin/bash -c "echo ${text} > ${path}"`);
     });
 }
@@ -3453,6 +3458,7 @@ exports.writeLineToFile = writeLineToFile;
  */
 function copyFileToS3({ path, key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: ''aws s3 cp', [path, \`s3://${bucket}/${key}\`]'`);
         yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`]);
     });
 }
@@ -3486,6 +3492,7 @@ exports.runAction = runAction;
  */
 function getTreeHashForCommitHash(commit) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`Executing: 'git rev-parse', [\`${commit}:\`]`);
         return execReadOutput('git rev-parse', [`${commit}:`]);
     });
 }
