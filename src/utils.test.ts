@@ -1,6 +1,5 @@
 import * as utils from './utils'
 import {exec} from '@actions/exec'
-import * as core from '@actions/core'
 
 jest.mock('@actions/core')
 jest.mock('@actions/exec')
