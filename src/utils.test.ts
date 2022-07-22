@@ -17,7 +17,7 @@ describe(`Actions Utils`, () => {
         const hash = '5265ef99f1c8e18bcd282a11a4b752731cad5665'
         const output = await utils.getTreeHashForCommitHash(hash)
         expect(mockedExec).toHaveBeenCalledWith(
-            'git rev-parse',
+            '/usr/bin/env git rev-parse',
             ['5265ef99f1c8e18bcd282a11a4b752731cad5665:'],
             {
                 listeners: {stdout: expect.any(Function)}
@@ -29,7 +29,7 @@ describe(`Actions Utils`, () => {
     test(`getCurrentRepoTreeHash uses git CLI to return the latest tree hash of the root of the repo`, async () => {
         mockedExec.mockResolvedValue(0)
         const output = await utils.getCurrentRepoTreeHash()
-        expect(mockedExec).toHaveBeenCalledWith('git rev-parse', ['HEAD:'], {
+        expect(mockedExec).toHaveBeenCalledWith('/usr/bin/env git rev-parse', ['HEAD:'], {
             listeners: {stdout: expect.any(Function)}
         })
         expect(output).toBe('')
@@ -38,14 +38,16 @@ describe(`Actions Utils`, () => {
     test(`writeLineToFile creates a file using a shell script`, async () => {
         mockedExec.mockResolvedValue(0)
         await utils.writeLineToFile({path: '/some/file', text: 'hello world'})
-        expect(mockedExec).toHaveBeenCalledWith(`/bin/bash -c "echo hello world > /some/file"`)
+        expect(mockedExec).toHaveBeenCalledWith(
+            `/usr/bin/env bash -c "echo hello world > /some/file"`
+        )
     })
 
     describe('S3 Utils', () => {
         test(`fileExistsInS3 uses AWS CLI to check for of an object in S3 bucket, returns true if it exists`, async () => {
             mockedExec.mockResolvedValue(0)
             const output = await utils.fileExistsInS3({key: 'my/key', bucket: 'my-bucket'})
-            expect(mockedExec).toHaveBeenCalledWith('aws s3api head-object', [
+            expect(mockedExec).toHaveBeenCalledWith('/usr/bin/env aws s3api head-object', [
                 '--bucket=my-bucket',
                 '--key=my/key'
             ])
@@ -55,7 +57,7 @@ describe(`Actions Utils`, () => {
         test(`fileExistsInS3 uses AWS CLI to check for of an object in S3 bucket, returns true if it exists`, async () => {
             mockedExec.mockRejectedValue(255)
             const output = await utils.fileExistsInS3({key: 'my/key', bucket: 'my-bucket'})
-            expect(mockedExec).toHaveBeenCalledWith('aws s3api head-object', [
+            expect(mockedExec).toHaveBeenCalledWith('/usr/bin/env aws s3api head-object', [
                 '--bucket=my-bucket',
                 '--key=my/key'
             ])
@@ -65,7 +67,7 @@ describe(`Actions Utils`, () => {
         test(`copyFileToS3 uses AWS CLI to copy a local file to S3 bucket`, async () => {
             mockedExec.mockResolvedValue(0)
             await utils.copyFileToS3({path: '/some/file', key: 'my/key', bucket: 'my-bucket'})
-            expect(mockedExec).toHaveBeenCalledWith('aws s3 cp', [
+            expect(mockedExec).toHaveBeenCalledWith('/usr/bin/env aws s3 cp', [
                 '/some/file',
                 's3://my-bucket/my/key'
             ])
