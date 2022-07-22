@@ -15,16 +15,19 @@ runAction(async () => {
     const keyPrefix = core.getInput('key_prefix')
     const repo = github.context.repo
 
-    const output = await restoreS3Cache({bucket, keyPrefix, repo})
+    const {processed, treeHash, key} = await restoreS3Cache({bucket, keyPrefix, repo})
 
-    // Saving key and hash in "state" which can be retrieved by the
-    // "post" run of the action (save.ts)
+    // Saving key and hash in "state" which can be retrieved by the "post" run of the action (save.ts)
     // https://github.com/actions/toolkit/tree/daf8bb00606d37ee2431d9b1596b88513dcf9c59/packages/core#action-state
-    core.saveState('key', output.key)
-    core.saveState('hash', output.treeHash)
+    core.saveState('key', key)
+    core.debug(`Saved state: ${key}`)
+    core.saveState('hash', treeHash)
+    core.debug(`Saved state: ${treeHash}`)
 
-    core.setOutput('processed', output.processed)
-    core.setOutput('hash', output.treeHash)
+    core.setOutput('processed', processed)
+    core.debug(`Set output: 'processed' - ${processed}`)
+    core.setOutput('hash', treeHash)
+    core.debug(`Set output: 'hash' - ${treeHash}`)
 })
 
 type RestoreS3CacheActionArgs = {
