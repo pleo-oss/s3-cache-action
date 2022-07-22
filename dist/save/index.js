@@ -3408,7 +3408,10 @@ const core = __importStar(__nccwpck_require__(186));
  */
 function fileExistsInS3({ key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`]);
+        return execIsSuccessful('/usr/bin/env aws s3api head-object', [
+            `--bucket=${bucket}`,
+            `--key=${key}`
+        ]);
     });
 }
 exports.fileExistsInS3 = fileExistsInS3;
@@ -3439,7 +3442,7 @@ function execIsSuccessful(commandLine, args) {
  */
 function writeLineToFile({ text, path }) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, exec_1.exec)(`/bin/bash -c "echo ${text} > ${path}"`);
+        yield (0, exec_1.exec)(`/usr/bin/env bash -c "echo ${text} > ${path}"`);
     });
 }
 exports.writeLineToFile = writeLineToFile;
@@ -3453,7 +3456,7 @@ exports.writeLineToFile = writeLineToFile;
  */
 function copyFileToS3({ path, key, bucket }) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`]);
+        yield (0, exec_1.exec)('/usr/bin/env aws s3 cp', [path, `s3://${bucket}/${key}`]);
     });
 }
 exports.copyFileToS3 = copyFileToS3;
@@ -3486,7 +3489,7 @@ exports.runAction = runAction;
  */
 function getTreeHashForCommitHash(commit) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execReadOutput('git rev-parse', [`${commit}:`]);
+        return execReadOutput('/usr/bin/env git rev-parse', [`${commit}:`]);
     });
 }
 exports.getTreeHashForCommitHash = getTreeHashForCommitHash;
