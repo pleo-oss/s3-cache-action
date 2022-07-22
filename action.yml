@@ -11,7 +11,7 @@ inputs:
     key_prefix:
         description:
             Key prefix to add to the cache files key. By default the job ID is used. The full key
-            used for the cache files is "cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}"
+            used for the cache files is `cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}`
         default: ${{ github.job }}
         required: false
 outputs:

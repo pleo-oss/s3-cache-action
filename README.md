@@ -40,7 +40,7 @@ that's the case.
 | parameter   | description                                                                                                                                                                 | required | default           |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------- |
 | bucket_name | Name of the S3 bucket to use for storing cache files. The job needs to have AWS credentials configured to allow read/write from this bucket.                                | `true`   |                   |
-| key_prefix  | Key prefix to add to the cache files key. By default the job ID is used. The full key used for the cache files is "cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}" | `false`  | ${{ github.job }} |
+| key_prefix  | Key prefix to add to the cache files key. By default the job ID is used. The full key used for the cache files is `cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}` | `false`  | ${{ github.job }} |
 
 <!-- action-docs-inputs -->
 
