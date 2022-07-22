@@ -9,7 +9,10 @@ import * as core from '@actions/core'
  * @returns fileExists - boolean indicating if the file exists
  */
 export async function fileExistsInS3({key, bucket}: {key: string; bucket: string}) {
-    return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`])
+    return execIsSuccessful('/usr/bin/env aws s3api head-object', [
+        `--bucket=${bucket}`,
+        `--key=${key}`
+    ])
 }
 
 /**
@@ -36,7 +39,7 @@ async function execIsSuccessful(commandLine: string, args?: string[]) {
  * @returns exitCode - shell command exit code
  */
 export async function writeLineToFile({text, path}: {text: string; path: string}) {
-    await exec(`/bin/bash -c "echo ${text} > ${path}"`)
+    await exec(`/usr/bin/env bash -c "echo ${text} > ${path}"`)
 }
 
 /**
@@ -56,7 +59,7 @@ export async function copyFileToS3({
     key: string
     bucket: string
 }) {
-    await exec('aws s3 cp', [path, `s3://${bucket}/${key}`])
+    await exec('/usr/bin/env aws s3 cp', [path, `s3://${bucket}/${key}`])
 }
 
 /**
@@ -82,7 +85,7 @@ export async function runAction(action: () => Promise<unknown>) {
  * @returns treeHash
  */
 export async function getTreeHashForCommitHash(commit: string) {
-    return execReadOutput('git rev-parse', [`${commit}:`])
+    return execReadOutput('/usr/bin/env git rev-parse', [`${commit}:`])
 }
 
 /**
