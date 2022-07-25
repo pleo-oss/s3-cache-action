@@ -1,15 +1,38 @@
-import {exec} from '@actions/exec'
+import {exec, ExecOptions} from '@actions/exec'
 import * as core from '@actions/core'
+
+export interface AWSOptions {
+    region: string
+    accessKeyId: string
+    secretAccessKey: string
+}
+
+export const toAWSEnvironmentVariables = (options: AWSOptions) => ({
+    AWS_REGION: options.region,
+    AWS_ACCESS_KEY_ID: options.accessKeyId,
+    AWS_SECRET_ACCESS_KEY: options.secretAccessKey
+})
 
 /**
  * Checks if a file with a given key exists in the specified S3 bucket
  * Uses "aws s3api head-object"
  * @param options.key - The key of a file in the S3 bucket
  * @param options.bucket - The name of the S3 bucket (globally unique)
+ * @param options.awsOptions - The AWS configuration for the S3 bucket (region, access key ID, secret access key)
  * @returns fileExists - boolean indicating if the file exists
  */
-export async function fileExistsInS3({key, bucket}: {key: string; bucket: string}) {
-    return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`])
+export async function fileExistsInS3({
+    key,
+    bucket,
+    awsOptions
+}: {
+    key: string
+    bucket: string
+    awsOptions: AWSOptions
+}) {
+    return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`], {
+        env: toAWSEnvironmentVariables(awsOptions)
+    })
 }
 
 /**
@@ -19,9 +42,9 @@ export async function fileExistsInS3({key, bucket}: {key: string; bucket: string
  * @param command -  optional arguments for tool
  * @returns isSuccessful
  */
-async function execIsSuccessful(commandLine: string, args?: string[]) {
+async function execIsSuccessful(commandLine: string, args?: string[], options?: ExecOptions) {
     try {
-        await exec(commandLine, args)
+        await exec(commandLine, args, options)
         return true
     } catch (e) {
         return false
@@ -45,18 +68,23 @@ export async function writeLineToFile({text, path}: {text: string; path: string}
  * @param options.path - The local path of the file (relative to working dir)
  * @param options.key - The key of a file to create in the S3 bucket
  * @param options.bucket - The name of the S3 bucket (globally unique)
+ * @param options.awsOptions - The AWS configuration for the S3 bucket (region, access key ID, secret access key)
  * @returns exitCode - shell command exit code
  */
 export async function copyFileToS3({
     path,
     key,
-    bucket
+    bucket,
+    awsOptions
 }: {
     path: string
     key: string
     bucket: string
+    awsOptions: AWSOptions
 }) {
-    await exec('aws s3 cp', [path, `s3://${bucket}/${key}`])
+    await exec('aws s3 cp', [path, `s3://${bucket}/${key}`], {
+        env: toAWSEnvironmentVariables(awsOptions)
+    })
 }
 
 /**

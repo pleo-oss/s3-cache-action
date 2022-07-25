@@ -7,23 +7,29 @@
  */
 
 import * as core from '@actions/core'
-import {writeLineToFile, copyFileToS3, runAction} from './utils'
+import {writeLineToFile, copyFileToS3, runAction, AWSOptions} from './utils'
 
 runAction(() => {
     const bucket = core.getInput('bucket_name', {required: true})
     const hash = core.getState('hash')
     const key = core.getState('key')
+    const awsOptions = {
+        region: core.getInput('aws-region'),
+        accessKeyId: core.getInput('aws-access-key-id'),
+        secretAccessKey: core.getInput('aws-secret-access-key')
+    }
 
-    return saveS3Cache({bucket, hash, key})
+    return saveS3Cache({bucket, hash, key, awsOptions})
 })
 
 type SaveS3CacheActionArgs = {
     bucket: string
     hash?: string
     key?: string
+    awsOptions: AWSOptions
 }
 
-export async function saveS3Cache({bucket, hash, key}: SaveS3CacheActionArgs) {
+export async function saveS3Cache({bucket, hash, key, awsOptions}: SaveS3CacheActionArgs) {
     if (!hash || !key) {
         core.info(`Tree hash already processed, skipping saving the cache file.`)
         return
@@ -32,7 +38,7 @@ export async function saveS3Cache({bucket, hash, key}: SaveS3CacheActionArgs) {
     // The content of the file doesn't really matter,
     // since we're only checking if the file exists
     await writeLineToFile({text: hash, path: hash})
-    await copyFileToS3({path: hash, bucket, key})
+    await copyFileToS3({path: hash, bucket, key, awsOptions})
 
     core.info(`Tree hash ${hash} was processed, saved the ${key} cache file.`)
 }
