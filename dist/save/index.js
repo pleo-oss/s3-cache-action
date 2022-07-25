@@ -3338,9 +3338,14 @@ const utils_1 = __nccwpck_require__(314);
     const bucket = core.getInput('bucket_name', { required: true });
     const hash = core.getState('hash');
     const key = core.getState('key');
-    return saveS3Cache({ bucket, hash, key });
+    const awsOptions = {
+        region: core.getInput('aws-region'),
+        accessKeyId: core.getInput('aws-access-key-id'),
+        secretAccessKey: core.getInput('aws-secret-access-key')
+    };
+    return saveS3Cache({ bucket, hash, key, awsOptions });
 });
-function saveS3Cache({ bucket, hash, key }) {
+function saveS3Cache({ bucket, hash, key, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!hash || !key) {
             core.info(`Tree hash already processed, skipping saving the cache file.`);
@@ -3349,7 +3354,7 @@ function saveS3Cache({ bucket, hash, key }) {
         // The content of the file doesn't really matter,
         // since we're only checking if the file exists
         yield (0, utils_1.writeLineToFile)({ text: hash, path: hash });
-        yield (0, utils_1.copyFileToS3)({ path: hash, bucket, key });
+        yield (0, utils_1.copyFileToS3)({ path: hash, bucket, key, awsOptions });
         core.info(`Tree hash ${hash} was processed, saved the ${key} cache file.`);
     });
 }
@@ -3399,6 +3404,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getCurrentRepoTreeHash = exports.getTreeHashForCommitHash = exports.runAction = exports.copyFileToS3 = exports.writeLineToFile = exports.fileExistsInS3 = void 0;
 const exec_1 = __nccwpck_require__(514);
 const core = __importStar(__nccwpck_require__(186));
+const toAWSEnvironmentVariables = (options) => ({
+    AWS_REGION: options.region,
+    AWS_ACCESS_KEY_ID: options.accessKeyId,
+    AWS_SECRET_ACCESS_KEY: options.secretAccessKey
+});
 /**
  * Checks if a file with a given key exists in the specified S3 bucket
  * Uses "aws s3api head-object"
@@ -3406,9 +3416,11 @@ const core = __importStar(__nccwpck_require__(186));
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns fileExists - boolean indicating if the file exists
  */
-function fileExistsInS3({ key, bucket }) {
+function fileExistsInS3({ key, bucket, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`]);
+        return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`], {
+            env: toAWSEnvironmentVariables(awsOptions)
+        });
     });
 }
 exports.fileExistsInS3 = fileExistsInS3;
@@ -3419,10 +3431,10 @@ exports.fileExistsInS3 = fileExistsInS3;
  * @param command -  optional arguments for tool
  * @returns isSuccessful
  */
-function execIsSuccessful(commandLine, args) {
+function execIsSuccessful(commandLine, args, options) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield (0, exec_1.exec)(commandLine, args);
+            yield (0, exec_1.exec)(commandLine, args, options);
             return true;
         }
         catch (e) {
@@ -3451,9 +3463,11 @@ exports.writeLineToFile = writeLineToFile;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns exitCode - shell command exit code
  */
-function copyFileToS3({ path, key, bucket }) {
+function copyFileToS3({ path, key, bucket, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`]);
+        yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`], {
+            env: toAWSEnvironmentVariables(awsOptions)
+        });
     });
 }
 exports.copyFileToS3 = copyFileToS3;

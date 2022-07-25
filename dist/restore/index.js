@@ -10153,7 +10153,12 @@ const utils_1 = __nccwpck_require__(1314);
     const bucket = core.getInput('bucket_name', { required: true });
     const keyPrefix = core.getInput('key_prefix');
     const repo = github.context.repo;
-    const output = yield restoreS3Cache({ bucket, keyPrefix, repo });
+    const awsOptions = {
+        region: core.getInput('aws-region'),
+        accessKeyId: core.getInput('aws-access-key-id'),
+        secretAccessKey: core.getInput('aws-secret-access-key')
+    };
+    const output = yield restoreS3Cache({ bucket, keyPrefix, repo, awsOptions });
     // Saving key and hash in "state" which can be retrieved by the
     // "post" run of the action (save.ts)
     // https://github.com/actions/toolkit/tree/daf8bb00606d37ee2431d9b1596b88513dcf9c59/packages/core#action-state
@@ -10162,11 +10167,11 @@ const utils_1 = __nccwpck_require__(1314);
     core.setOutput('processed', output.processed);
     core.setOutput('hash', output.treeHash);
 }));
-function restoreS3Cache({ bucket, keyPrefix, repo }) {
+function restoreS3Cache({ bucket, keyPrefix, repo, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
         const treeHash = yield (0, utils_1.getCurrentRepoTreeHash)();
         const key = `cache/${repo.owner}/${repo.repo}/${keyPrefix}/${treeHash}`;
-        const fileExists = yield (0, utils_1.fileExistsInS3)({ key, bucket });
+        const fileExists = yield (0, utils_1.fileExistsInS3)({ key, bucket, awsOptions });
         if (fileExists) {
             core.info(`Tree hash ${treeHash} already processed.`);
             return { processed: true, treeHash, key };
@@ -10221,6 +10226,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getCurrentRepoTreeHash = exports.getTreeHashForCommitHash = exports.runAction = exports.copyFileToS3 = exports.writeLineToFile = exports.fileExistsInS3 = void 0;
 const exec_1 = __nccwpck_require__(1514);
 const core = __importStar(__nccwpck_require__(2186));
+const toAWSEnvironmentVariables = (options) => ({
+    AWS_REGION: options.region,
+    AWS_ACCESS_KEY_ID: options.accessKeyId,
+    AWS_SECRET_ACCESS_KEY: options.secretAccessKey
+});
 /**
  * Checks if a file with a given key exists in the specified S3 bucket
  * Uses "aws s3api head-object"
@@ -10228,9 +10238,11 @@ const core = __importStar(__nccwpck_require__(2186));
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns fileExists - boolean indicating if the file exists
  */
-function fileExistsInS3({ key, bucket }) {
+function fileExistsInS3({ key, bucket, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`]);
+        return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`], {
+            env: toAWSEnvironmentVariables(awsOptions)
+        });
     });
 }
 exports.fileExistsInS3 = fileExistsInS3;
@@ -10241,10 +10253,10 @@ exports.fileExistsInS3 = fileExistsInS3;
  * @param command -  optional arguments for tool
  * @returns isSuccessful
  */
-function execIsSuccessful(commandLine, args) {
+function execIsSuccessful(commandLine, args, options) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield (0, exec_1.exec)(commandLine, args);
+            yield (0, exec_1.exec)(commandLine, args, options);
             return true;
         }
         catch (e) {
@@ -10273,9 +10285,11 @@ exports.writeLineToFile = writeLineToFile;
  * @param options.bucket - The name of the S3 bucket (globally unique)
  * @returns exitCode - shell command exit code
  */
-function copyFileToS3({ path, key, bucket }) {
+function copyFileToS3({ path, key, bucket, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`]);
+        yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`], {
+            env: toAWSEnvironmentVariables(awsOptions)
+        });
     });
 }
 exports.copyFileToS3 = copyFileToS3;
