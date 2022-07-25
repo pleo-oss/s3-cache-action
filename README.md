@@ -10,7 +10,7 @@
 
 ## Description
 
-Allows to skip a job if it already succeeded for the same repo tree hash. Uses S3 for caching.
+Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.
 
 <!-- action-docs-description -->
 
