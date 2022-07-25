@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/pleo-oss/s3-cache-action/compare/v2.0.0...v2.0.1) (2022-07-25)
+
+
+### Bug Fixes
+
+* Ensure consistent parameter naming ([#14](https://github.com/pleo-oss/s3-cache-action/issues/14)) ([b4a1774](https://github.com/pleo-oss/s3-cache-action/commit/b4a177420fa30238c4524b6d6e0d71870d660585))
+
 ## [2.0.0](https://github.com/pleo-oss/s3-cache-action/compare/v1.1.0...v2.0.0) (2022-07-25)
 
 
