@@ -11,8 +11,8 @@ import * as github from '@actions/github'
 import {getCurrentRepoTreeHash, fileExistsInS3, runAction, AWSOptions} from './utils'
 
 runAction(async () => {
-    const bucket = core.getInput('bucket_name', {required: true})
-    const keyPrefix = core.getInput('key_prefix')
+    const bucket = core.getInput('bucket-name', {required: true})
+    const keyPrefix = core.getInput('key-prefix')
     const repo = github.context.repo
     const awsOptions = {
         region: core.getInput('aws-region'),

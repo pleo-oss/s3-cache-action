@@ -67,7 +67,10 @@ that's the case.
 - uses: pleo-oss/s3-cache-action@v1
   id: s3-cache
   with:
-      bucket_name: my-s3-bucket
+      bucket-name: my-s3-bucket
+      aws-region: eu-west-1
+      aws-access-key-id: 'aws-access-key-id'
+      aws-secret-access-key: 'aws-secret-access-key'
 - run: make very-long-lint
   if: steps.s3-cache.outputs.processed == 'false'
 - run: make very-long-test
