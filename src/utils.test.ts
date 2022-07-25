@@ -1,12 +1,17 @@
 import * as utils from './utils'
 import {exec} from '@actions/exec'
-import * as core from '@actions/core'
 
 jest.mock('@actions/core')
 jest.mock('@actions/exec')
 
 // just making sure the mock methods are correctly typed
 const mockedExec = exec as jest.MockedFunction<typeof exec>
+
+const awsOptions = {
+    region: 'eu-west-1',
+    accessKeyId: 'verycoolkey',
+    secretAccessKey: 'verycoolsecretkey'
+}
 
 // reset the counter on mock fn calls after every test
 beforeEach(() => jest.clearAllMocks())
@@ -44,31 +49,47 @@ describe(`Actions Utils`, () => {
     describe('S3 Utils', () => {
         test(`fileExistsInS3 uses AWS CLI to check for of an object in S3 bucket, returns true if it exists`, async () => {
             mockedExec.mockResolvedValue(0)
-            const output = await utils.fileExistsInS3({key: 'my/key', bucket: 'my-bucket'})
-            expect(mockedExec).toHaveBeenCalledWith('aws s3api head-object', [
-                '--bucket=my-bucket',
-                '--key=my/key'
-            ])
+            const output = await utils.fileExistsInS3({
+                key: 'my/key',
+                bucket: 'my-bucket',
+                awsOptions
+            })
+            expect(mockedExec).toHaveBeenCalledWith(
+                'aws s3api head-object',
+                ['--bucket=my-bucket', '--key=my/key'],
+                {env: utils.toAWSEnvironmentVariables(awsOptions)}
+            )
             expect(output).toBe(true)
         })
 
         test(`fileExistsInS3 uses AWS CLI to check for of an object in S3 bucket, returns true if it exists`, async () => {
             mockedExec.mockRejectedValue(255)
-            const output = await utils.fileExistsInS3({key: 'my/key', bucket: 'my-bucket'})
-            expect(mockedExec).toHaveBeenCalledWith('aws s3api head-object', [
-                '--bucket=my-bucket',
-                '--key=my/key'
-            ])
+            const output = await utils.fileExistsInS3({
+                key: 'my/key',
+                bucket: 'my-bucket',
+                awsOptions
+            })
+            expect(mockedExec).toHaveBeenCalledWith(
+                'aws s3api head-object',
+                ['--bucket=my-bucket', '--key=my/key'],
+                {env: utils.toAWSEnvironmentVariables(awsOptions)}
+            )
             expect(output).toBe(false)
         })
 
         test(`copyFileToS3 uses AWS CLI to copy a local file to S3 bucket`, async () => {
             mockedExec.mockResolvedValue(0)
-            await utils.copyFileToS3({path: '/some/file', key: 'my/key', bucket: 'my-bucket'})
-            expect(mockedExec).toHaveBeenCalledWith('aws s3 cp', [
-                '/some/file',
-                's3://my-bucket/my/key'
-            ])
+            await utils.copyFileToS3({
+                path: '/some/file',
+                key: 'my/key',
+                bucket: 'my-bucket',
+                awsOptions
+            })
+            expect(mockedExec).toHaveBeenCalledWith(
+                'aws s3 cp',
+                ['/some/file', 's3://my-bucket/my/key'],
+                {env: utils.toAWSEnvironmentVariables(awsOptions)}
+            )
         })
     })
 })

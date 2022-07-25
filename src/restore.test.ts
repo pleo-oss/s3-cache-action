@@ -5,6 +5,12 @@ import * as utils from './utils'
 jest.mock('./utils')
 const mockedUtils = jest.mocked(utils, true)
 
+const awsOptions = {
+    region: 'eu-west-1',
+    accessKeyId: 'verycoolkey',
+    secretAccessKey: 'verycoolsecretkey'
+}
+
 beforeEach(() => jest.clearAllMocks())
 
 describe(`S3 Cache Action - Restore cache`, () => {
@@ -22,7 +28,8 @@ describe(`S3 Cache Action - Restore cache`, () => {
             const output = await restoreS3Cache({
                 bucket: 'my-bucket',
                 keyPrefix: 'horse',
-                repo: {owner: 'my-org', repo: 'my-repo'}
+                repo: {owner: 'my-org', repo: 'my-repo'},
+                awsOptions
             })
 
             expect(output.key).toBe(`cache/my-org/my-repo/horse/${treeHash}`)
@@ -32,7 +39,8 @@ describe(`S3 Cache Action - Restore cache`, () => {
             expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
             expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
                 bucket: 'my-bucket',
-                key: `cache/my-org/my-repo/horse/${treeHash}`
+                key: `cache/my-org/my-repo/horse/${treeHash}`,
+                awsOptions: awsOptions
             })
         }
     )
@@ -51,7 +59,8 @@ describe(`S3 Cache Action - Restore cache`, () => {
             const output = await restoreS3Cache({
                 bucket: 'my-other-bucket',
                 keyPrefix: 'horse',
-                repo: {owner: 'my-org', repo: 'my-repo'}
+                repo: {owner: 'my-org', repo: 'my-repo'},
+                awsOptions
             })
 
             expect(output.key).toBe(`cache/my-org/my-repo/horse/${treeHash}`)
@@ -61,7 +70,8 @@ describe(`S3 Cache Action - Restore cache`, () => {
             expect(mockedUtils.fileExistsInS3).toHaveBeenCalledTimes(1)
             expect(mockedUtils.fileExistsInS3).toHaveBeenCalledWith({
                 bucket: 'my-other-bucket',
-                key: `cache/my-org/my-repo/horse/${treeHash}`
+                key: `cache/my-org/my-repo/horse/${treeHash}`,
+                awsOptions: awsOptions
             })
         }
     )

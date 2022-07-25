@@ -5,6 +5,12 @@ import * as utils from './utils'
 jest.mock('./utils')
 const mockedUtils = jest.mocked(utils, true)
 
+const awsOptions = {
+    region: 'eu-west-1',
+    accessKeyId: 'verycoolkey',
+    secretAccessKey: 'verycoolsecretkey'
+}
+
 beforeEach(() => jest.clearAllMocks())
 
 describe(`S3 Cache Action - Save cache`, () => {
@@ -19,7 +25,8 @@ describe(`S3 Cache Action - Save cache`, () => {
             await saveS3Cache({
                 bucket: 'my-bucket',
                 hash: treeHash,
-                key: 'my-org/my-repo/cache/horse'
+                key: 'my-org/my-repo/cache/horse',
+                awsOptions
             })
 
             expect(mockedUtils.writeLineToFile).toHaveBeenCalledTimes(1)
@@ -32,7 +39,8 @@ describe(`S3 Cache Action - Save cache`, () => {
             expect(mockedUtils.copyFileToS3).toHaveBeenCalledWith({
                 path: treeHash,
                 bucket: 'my-bucket',
-                key: 'my-org/my-repo/cache/horse'
+                key: 'my-org/my-repo/cache/horse',
+                awsOptions
             })
         }
     )
@@ -46,7 +54,8 @@ describe(`S3 Cache Action - Save cache`, () => {
             await saveS3Cache({
                 bucket: 'my-bucket',
                 hash: '',
-                key: ''
+                key: '',
+                awsOptions
             })
 
             expect(mockedUtils.writeLineToFile).not.toHaveBeenCalled()
