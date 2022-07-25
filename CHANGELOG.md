@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/pleo-oss/s3-cache-action/compare/v1.1.0...v2.0.0) (2022-07-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Makes AWS parameters required since ${{ env }} parameters aren't allowed for `default` definitions in `action.yml`.
+
+### Features
+
+* Fix AWS environment parameters not injecting as expected  ([#12](https://github.com/pleo-oss/s3-cache-action/issues/12)) ([25beab9](https://github.com/pleo-oss/s3-cache-action/commit/25beab95c6878c1f757338afe2ea11727fee6854))
+
 ## [1.1.0](https://github.com/pleo-oss/s3-cache-action/compare/v1.0.0...v1.1.0) (2022-07-25)
 
 
