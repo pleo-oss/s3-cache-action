@@ -7,10 +7,10 @@
 | <img width="500" alt="On the first run, the action reports no cache and the long task is done." src="https://user-images.githubusercontent.com/4643658/180269047-417226dd-ce8f-41a6-92ee-e6ed7d279cb6.png"> | <img width="500" alt="On the next run, the action reports cache hit, and the long task is skipped" src="https://user-images.githubusercontent.com/4643658/180269038-9f896490-619f-4fd8-b801-af01b62b1981.png"> |
 
 <!-- action-docs-description -->
-
 ## Description
 
 Allows to skip a job if it already succeeded for the same repo tree hash. Uses S3 for caching.
+
 
 <!-- action-docs-description -->
 
@@ -34,27 +34,29 @@ allow to read and write to the S3 bucket provided as input. Use the
 that's the case.
 
 <!-- action-docs-inputs -->
-
 ## Inputs
 
-| parameter             | description                                                                                                                                                                 | required | default                          |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------- |
-| bucket-name           | Name of the S3 bucket to use for storing cache files. The job needs to have AWS credentials configured to allow read/write from this bucket.                                | `true`   |                                  |
-| key-prefix            | Key prefix to add to the cache files key. By default the job ID is used. The full key used for the cache files is "cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}" | `false`  | ${{ github.job }}                |
-| aws-region            | AWS region for the S3 bucket used for storing hashes.                                                                                                                       | `false`  | ${{ env.AWS_REGION }}            |
-| aws-access-key-id     | AWS Access Key for the AWS account managing the S3 bucket used for storing hashes.                                                                                          | `false`  | ${{ env.AWS_ACCESS_KEY_ID }}     |
-| aws-secret-access-key | AWS Secret Access Key for the AWS account managing the S3 bucket used for storing hashes.                                                                                   | `false`  | ${{ env.AWS_SECRET_ACCESS_KEY }} |
+| parameter | description | required | default |
+| - | - | - | - |
+| bucket-name | Name of the S3 bucket to use for storing cache files. The job needs to have AWS credentials configured to allow read/write from this bucket. | `true` |  |
+| key-prefix | Key prefix to add to the cache files key. By default the job ID is used. The full key used for the cache files is `cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}` | `false` | ${{ github.job }} |
+| aws-region | AWS region for the S3 bucket used for storing hashes. | `false` | ${{ env.AWS_REGION }} |
+| aws-access-key-id | AWS Access Key for the AWS account managing the S3 bucket used for storing hashes. | `false` | ${{ env.AWS_ACCESS_KEY_ID }} |
+| aws-secret-access-key | AWS Secret Access Key for the AWS account managing the S3 bucket used for storing hashes. | `false` | ${{ env.AWS_SECRET_ACCESS_KEY }} |
+
+
 
 <!-- action-docs-inputs -->
 
 <!-- action-docs-outputs -->
-
 ## Outputs
 
-| parameter | description                                                                     |
-| --------- | ------------------------------------------------------------------------------- |
+| parameter | description |
+| - | - |
 | processed | Indicates if the job has already been performed for the current repo tree hash. |
-| hash      | The repo tree hash which was used for caching.                                  |
+| hash | The repo tree hash which was used for caching. |
+
+
 
 <!-- action-docs-outputs -->
 
@@ -75,10 +77,10 @@ that's the case.
 ```
 
 <!-- action-docs-runs -->
-
 ## Runs
 
 This action is a `node16` action.
+
 
 <!-- action-docs-runs -->
 
