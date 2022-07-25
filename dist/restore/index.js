@@ -10150,8 +10150,8 @@ const core_1 = __nccwpck_require__(2186);
 const github = __importStar(__nccwpck_require__(5438));
 const utils_1 = __nccwpck_require__(1314);
 (0, utils_1.runAction)(() => __awaiter(void 0, void 0, void 0, function* () {
-    const bucket = (0, core_1.getInput)('bucket_name', { required: true });
-    const keyPrefix = (0, core_1.getInput)('key_prefix');
+    const bucket = (0, core_1.getInput)('bucket-name', { required: true });
+    const keyPrefix = (0, core_1.getInput)('key-prefix');
     const repo = github.context.repo;
     const awsOptions = {
         region: (0, core_1.getInput)('aws-region'),

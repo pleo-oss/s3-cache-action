@@ -10,7 +10,7 @@ import {getInput, getState, info} from '@actions/core'
 import {writeLineToFile, copyFileToS3, runAction, AWSOptions} from './utils'
 
 runAction(() => {
-    const bucket = getInput('bucket_name', {required: true})
+    const bucket = getInput('bucket-name', {required: true})
     const hash = getState('hash')
     const key = getState('key')
     const awsOptions = {
