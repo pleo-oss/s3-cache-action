@@ -1,6 +1,6 @@
 name: S3 Cache Action
 description:
-    Allows to skip a job if it already succeeded for the same repo tree hash. Uses S3 for caching.
+    Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.
 author: Pleo OSS
 inputs:
     bucket-name:
@@ -15,23 +15,24 @@ inputs:
         default: ${{ github.job }}
         required: false
     aws-region:
-        description: AWS region for the S3 bucket used for storing hashes.
+        description: AWS region for the S3 bucket used for cache files.
         default: ${{ env.AWS_REGION }}
         required: false
     aws-access-key-id:
         description:
-            AWS Access Key for the AWS account managing the S3 bucket used for storing hashes.
+            Access Key ID for an IAM user with permissions to read/write to the S3 bucket used for
+            cache files.
         default: ${{ env.AWS_ACCESS_KEY_ID }}
         required: false
     aws-secret-access-key:
         description:
-            AWS Secret Access Key for the AWS account managing the S3 bucket used for storing
-            hashes.
+            Secret Access Key for an IAM user with permissions to read/write to the S3 bucket used
+            for cache files.
         default: ${{ env.AWS_SECRET_ACCESS_KEY }}
         required: false
 outputs:
     processed:
-        description: Indicates if the job has already been performed for the current repo tree hash.
+        description: Indicates if the job has already been performed for the current repo state.
     hash:
         description: The repo tree hash which was used for caching.
 runs:
