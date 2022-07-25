@@ -10,7 +10,7 @@
 
 ## Description
 
-Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.
+Allows to skip a job if it already succeeded for the same repo tree hash. Uses S3 for caching.
 
 <!-- action-docs-description -->
 
@@ -37,10 +37,13 @@ that's the case.
 
 ## Inputs
 
-| parameter   | description                                                                                                                                                                 | required | default           |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------- |
-| bucket_name | Name of the S3 bucket to use for storing cache files. The job needs to have AWS credentials configured to allow read/write from this bucket.                                | `true`   |                   |
-| key_prefix  | Key prefix to add to the cache files key. By default the job ID is used. The full key used for the cache files is "cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}" | `false`  | ${{ github.job }} |
+| parameter             | description                                                                                                                                                                 | required | default                          |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------- |
+| bucket-name           | Name of the S3 bucket to use for storing cache files. The job needs to have AWS credentials configured to allow read/write from this bucket.                                | `true`   |                                  |
+| key-prefix            | Key prefix to add to the cache files key. By default the job ID is used. The full key used for the cache files is "cache/${repoOwner}/${repoName}/${keyPrefix}/${treeHash}" | `false`  | ${{ github.job }}                |
+| aws-region            | AWS region for the S3 bucket used for storing hashes.                                                                                                                       | `false`  | ${{ env.AWS_REGION }}            |
+| aws-access-key-id     | AWS Access Key for the AWS account managing the S3 bucket used for storing hashes.                                                                                          | `false`  | ${{ env.AWS_ACCESS_KEY_ID }}     |
+| aws-secret-access-key | AWS Secret Access Key for the AWS account managing the S3 bucket used for storing hashes.                                                                                   | `false`  | ${{ env.AWS_SECRET_ACCESS_KEY }} |
 
 <!-- action-docs-inputs -->
 
@@ -48,10 +51,10 @@ that's the case.
 
 ## Outputs
 
-| parameter | description                                                                    |
-| --------- | ------------------------------------------------------------------------------ |
-| processed | Indicates if the job has already been performed for the current repo tree hash |
-| hash      | The repo tree hash which was used for caching                                  |
+| parameter | description                                                                     |
+| --------- | ------------------------------------------------------------------------------- |
+| processed | Indicates if the job has already been performed for the current repo tree hash. |
+| hash      | The repo tree hash which was used for caching.                                  |
 
 <!-- action-docs-outputs -->
 
