@@ -3401,7 +3401,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getCurrentRepoTreeHash = exports.getTreeHashForCommitHash = exports.runAction = exports.copyFileToS3 = exports.writeLineToFile = exports.fileExistsInS3 = void 0;
+exports.getCurrentRepoTreeHash = exports.getTreeHashForCommitHash = exports.runAction = exports.copyFileToS3 = exports.writeLineToFile = exports.fileExistsInS3 = exports.toAWSEnvironmentVariables = void 0;
 const exec_1 = __nccwpck_require__(514);
 const core = __importStar(__nccwpck_require__(186));
 const toAWSEnvironmentVariables = (options) => ({
@@ -3409,6 +3409,7 @@ const toAWSEnvironmentVariables = (options) => ({
     AWS_ACCESS_KEY_ID: options.accessKeyId,
     AWS_SECRET_ACCESS_KEY: options.secretAccessKey
 });
+exports.toAWSEnvironmentVariables = toAWSEnvironmentVariables;
 /**
  * Checks if a file with a given key exists in the specified S3 bucket
  * Uses "aws s3api head-object"
@@ -3419,7 +3420,7 @@ const toAWSEnvironmentVariables = (options) => ({
 function fileExistsInS3({ key, bucket, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
         return execIsSuccessful('aws s3api head-object', [`--bucket=${bucket}`, `--key=${key}`], {
-            env: toAWSEnvironmentVariables(awsOptions)
+            env: (0, exports.toAWSEnvironmentVariables)(awsOptions)
         });
     });
 }
@@ -3466,7 +3467,7 @@ exports.writeLineToFile = writeLineToFile;
 function copyFileToS3({ path, key, bucket, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, exec_1.exec)('aws s3 cp', [path, `s3://${bucket}/${key}`], {
-            env: toAWSEnvironmentVariables(awsOptions)
+            env: (0, exports.toAWSEnvironmentVariables)(awsOptions)
         });
     });
 }
