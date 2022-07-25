@@ -1,5 +1,5 @@
 import {exec, ExecOptions} from '@actions/exec'
-import * as core from '@actions/core'
+import {error as addError, setFailed} from '@actions/core'
 
 export interface AWSOptions {
     region: string
@@ -96,10 +96,10 @@ export async function runAction(action: () => Promise<unknown>) {
         return action()
     } catch (error: unknown) {
         if (error instanceof Error) {
-            core.error(error.stack ?? error.message)
-            core.setFailed(error)
+            addError(error.stack ?? error.message)
+            setFailed(error)
         } else {
-            core.setFailed(String(error))
+            setFailed(String(error))
         }
     }
 }

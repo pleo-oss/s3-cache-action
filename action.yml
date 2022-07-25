@@ -15,21 +15,20 @@ inputs:
         default: ${{ github.job }}
         required: false
     aws-region:
-        description: AWS region for the S3 bucket used for cache files.
-        default: ${{ env.AWS_REGION }}
-        required: false
+        description:
+            AWS region for the S3 bucket used for cache files. Defaults to `env.AWS_REGION` if
+            available.
+        required: true
     aws-access-key-id:
         description:
             Access Key ID for an IAM user with permissions to read/write to the S3 bucket used for
-            cache files.
-        default: ${{ env.AWS_ACCESS_KEY_ID }}
-        required: false
+            cache files. Defaults to `env.AWS_ACCESS_KEY_ID` if available.
+        required: true
     aws-secret-access-key:
         description:
             Secret Access Key for an IAM user with permissions to read/write to the S3 bucket used
-            for cache files.
-        default: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        required: false
+            for cache files. Defaults to `env.AWS_SECRET_ACCESS_KEY` if available.
+        required: true
 outputs:
     processed:
         description: Indicates if the job has already been performed for the current repo state.

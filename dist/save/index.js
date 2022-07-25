@@ -3298,29 +3298,6 @@ exports.debug = debug; // for test
  *
  * Uploads a cache file to the S3 bucket, if the file was not uploaded before.
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -3332,30 +3309,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.saveS3Cache = void 0;
-const core = __importStar(__nccwpck_require__(186));
+const core_1 = __nccwpck_require__(186);
 const utils_1 = __nccwpck_require__(314);
 (0, utils_1.runAction)(() => {
-    const bucket = core.getInput('bucket_name', { required: true });
-    const hash = core.getState('hash');
-    const key = core.getState('key');
+    const bucket = (0, core_1.getInput)('bucket_name', { required: true });
+    const hash = (0, core_1.getState)('hash');
+    const key = (0, core_1.getState)('key');
     const awsOptions = {
-        region: core.getInput('aws-region'),
-        accessKeyId: core.getInput('aws-access-key-id'),
-        secretAccessKey: core.getInput('aws-secret-access-key')
+        region: (0, core_1.getInput)('aws-region'),
+        accessKeyId: (0, core_1.getInput)('aws-access-key-id'),
+        secretAccessKey: (0, core_1.getInput)('aws-secret-access-key')
     };
     return saveS3Cache({ bucket, hash, key, awsOptions });
 });
 function saveS3Cache({ bucket, hash, key, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!hash || !key) {
-            core.info(`Tree hash already processed, skipping saving the cache file.`);
+            (0, core_1.info)(`Tree hash already processed, skipping saving the cache file.`);
             return;
         }
         // The content of the file doesn't really matter,
         // since we're only checking if the file exists
         yield (0, utils_1.writeLineToFile)({ text: hash, path: hash });
         yield (0, utils_1.copyFileToS3)({ path: hash, bucket, key, awsOptions });
-        core.info(`Tree hash ${hash} was processed, saved the ${key} cache file.`);
+        (0, core_1.info)(`Tree hash ${hash} was processed, saved the ${key} cache file.`);
     });
 }
 exports.saveS3Cache = saveS3Cache;
@@ -3368,29 +3345,6 @@ exports.saveS3Cache = saveS3Cache;
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -3403,7 +3357,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getCurrentRepoTreeHash = exports.getTreeHashForCommitHash = exports.runAction = exports.copyFileToS3 = exports.writeLineToFile = exports.fileExistsInS3 = exports.toAWSEnvironmentVariables = void 0;
 const exec_1 = __nccwpck_require__(514);
-const core = __importStar(__nccwpck_require__(186));
+const core_1 = __nccwpck_require__(186);
 const toAWSEnvironmentVariables = (options) => ({
     AWS_REGION: options.region,
     AWS_ACCESS_KEY_ID: options.accessKeyId,
@@ -3486,11 +3440,11 @@ function runAction(action) {
         }
         catch (error) {
             if (error instanceof Error) {
-                core.error((_a = error.stack) !== null && _a !== void 0 ? _a : error.message);
-                core.setFailed(error);
+                (0, core_1.error)((_a = error.stack) !== null && _a !== void 0 ? _a : error.message);
+                (0, core_1.setFailed)(error);
             }
             else {
-                core.setFailed(String(error));
+                (0, core_1.setFailed)(String(error));
             }
         }
     });
