@@ -10146,26 +10146,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.restoreS3Cache = void 0;
-const core = __importStar(__nccwpck_require__(2186));
+const core_1 = __nccwpck_require__(2186);
 const github = __importStar(__nccwpck_require__(5438));
 const utils_1 = __nccwpck_require__(1314);
 (0, utils_1.runAction)(() => __awaiter(void 0, void 0, void 0, function* () {
-    const bucket = core.getInput('bucket_name', { required: true });
-    const keyPrefix = core.getInput('key_prefix');
+    const bucket = (0, core_1.getInput)('bucket_name', { required: true });
+    const keyPrefix = (0, core_1.getInput)('key_prefix');
     const repo = github.context.repo;
     const awsOptions = {
-        region: core.getInput('aws-region'),
-        accessKeyId: core.getInput('aws-access-key-id'),
-        secretAccessKey: core.getInput('aws-secret-access-key')
+        region: (0, core_1.getInput)('aws-region'),
+        accessKeyId: (0, core_1.getInput)('aws-access-key-id'),
+        secretAccessKey: (0, core_1.getInput)('aws-secret-access-key')
     };
     const output = yield restoreS3Cache({ bucket, keyPrefix, repo, awsOptions });
     // Saving key and hash in "state" which can be retrieved by the
     // "post" run of the action (save.ts)
     // https://github.com/actions/toolkit/tree/daf8bb00606d37ee2431d9b1596b88513dcf9c59/packages/core#action-state
-    core.saveState('key', output.key);
-    core.saveState('hash', output.treeHash);
-    core.setOutput('processed', output.processed);
-    core.setOutput('hash', output.treeHash);
+    (0, core_1.saveState)('key', output.key);
+    (0, core_1.saveState)('hash', output.treeHash);
+    (0, core_1.setOutput)('processed', output.processed);
+    (0, core_1.setOutput)('hash', output.treeHash);
 }));
 function restoreS3Cache({ bucket, keyPrefix, repo, awsOptions }) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10173,10 +10173,10 @@ function restoreS3Cache({ bucket, keyPrefix, repo, awsOptions }) {
         const key = `cache/${repo.owner}/${repo.repo}/${keyPrefix}/${treeHash}`;
         const fileExists = yield (0, utils_1.fileExistsInS3)({ key, bucket, awsOptions });
         if (fileExists) {
-            core.info(`Tree hash ${treeHash} already processed.`);
+            (0, core_1.info)(`Tree hash ${treeHash} already processed.`);
             return { processed: true, treeHash, key };
         }
-        core.info(`Tree hash ${treeHash} has not been processed yet.`);
+        (0, core_1.info)(`Tree hash ${treeHash} has not been processed yet.`);
         return { processed: false, treeHash, key };
     });
 }
@@ -10190,29 +10190,6 @@ exports.restoreS3Cache = restoreS3Cache;
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10225,7 +10202,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getCurrentRepoTreeHash = exports.getTreeHashForCommitHash = exports.runAction = exports.copyFileToS3 = exports.writeLineToFile = exports.fileExistsInS3 = exports.toAWSEnvironmentVariables = void 0;
 const exec_1 = __nccwpck_require__(1514);
-const core = __importStar(__nccwpck_require__(2186));
+const core_1 = __nccwpck_require__(2186);
 const toAWSEnvironmentVariables = (options) => ({
     AWS_REGION: options.region,
     AWS_ACCESS_KEY_ID: options.accessKeyId,
@@ -10308,11 +10285,11 @@ function runAction(action) {
         }
         catch (error) {
             if (error instanceof Error) {
-                core.error((_a = error.stack) !== null && _a !== void 0 ? _a : error.message);
-                core.setFailed(error);
+                (0, core_1.error)((_a = error.stack) !== null && _a !== void 0 ? _a : error.message);
+                (0, core_1.setFailed)(error);
             }
             else {
-                core.setFailed(String(error));
+                (0, core_1.setFailed)(String(error));
             }
         }
     });
