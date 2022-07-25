@@ -3415,6 +3415,7 @@ exports.toAWSEnvironmentVariables = toAWSEnvironmentVariables;
  * Uses "aws s3api head-object"
  * @param options.key - The key of a file in the S3 bucket
  * @param options.bucket - The name of the S3 bucket (globally unique)
+ * @param options.awsOptions - The AWS configuration for the S3 bucket (region, access key ID, secret access key)
  * @returns fileExists - boolean indicating if the file exists
  */
 function fileExistsInS3({ key, bucket, awsOptions }) {
@@ -3462,6 +3463,7 @@ exports.writeLineToFile = writeLineToFile;
  * @param options.path - The local path of the file (relative to working dir)
  * @param options.key - The key of a file to create in the S3 bucket
  * @param options.bucket - The name of the S3 bucket (globally unique)
+ * @param options.awsOptions - The AWS configuration for the S3 bucket (region, access key ID, secret access key)
  * @returns exitCode - shell command exit code
  */
 function copyFileToS3({ path, key, bucket, awsOptions }) {
