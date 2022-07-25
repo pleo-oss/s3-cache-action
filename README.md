@@ -81,3 +81,37 @@ that's the case.
 This action is a `node16` action.
 
 <!-- action-docs-runs -->
+
+# Contributing
+
+-   Fork this repository
+-   Install dependencies
+
+```sh
+yarn
+```
+
+-   Make changes
+-   Test your changes
+
+```sh
+make test
+```
+
+-   Lint your changes
+
+```sh
+make lint
+```
+
+-   Build the action
+
+```sh
+make build
+```
+
+-   Commit the built Action
+-   Submit a PR
+
+PR titles must follow the
+[Conventional Commits spec](https://www.conventionalcommits.org/en/v1.0.0/).
