@@ -1,47 +1,54 @@
 name: Pull Request Check
 on:
-    pull_request:
-        types:
-            - opened
-            - edited
-            - reopened
-            - synchronize
+  pull_request:
+      types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
 
 concurrency:
-    group: actions-ci-${{ github.ref }}
-    cancel-in-progress: true
+  group: actions-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-    semantic-title:
-        name: Check PR Title for Semantic Release Type
-        runs-on: ubuntu-22.04
-        permissions:
-            pull-requests: read
-        steps:
-            - name: Check PR Title
-              uses: amannn/action-semantic-pull-request@v3.4.2
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  validateSingleCommit: true
-    test:
-        name: Check
-        runs-on: ubuntu-22.04
-        permissions:
-            contents: read
-        steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: '16.x'
-                  registry-url: 'https://registry.npmjs.org'
-                  cache: 'yarn'
+  release-title:
+    name: Check PR labels for release Type
+    runs-on: ubuntu-22.04
 
-            - run: yarn --frozen-lockfile
-            - run: make test
-            - run: make build
-            - run: make lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Verify PR labels
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: major,minor,patch,internal
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Check if built version was committed
-              run: |
-                  git diff --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)
+  test:
+    name: Check
+    runs-on: ubuntu-22.04
+
+    permissions:
+        contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+            node-version: '16.x'
+            registry-url: 'https://registry.npmjs.org'
+            cache: 'yarn'
+
+      - run: yarn --frozen-lockfile
+      - run: make test
+      - run: make build
+      - run: make lint
+
+      - name: Check if built version was committed
+        run: |
+            git diff --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)
