@@ -1,19 +1,25 @@
 name: Release
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 jobs:
-    release:
-        name: Run "Release Please"
-        runs-on: ubuntu-22.04
-        outputs:
-            release_created: ${{ steps.release.outputs.release_created }}
-        steps:
-            - uses: google-github-actions/release-please-action@v3
-              id: release
-              with:
-                  release-type: node
-                  package-name: '@pleo-oss/s3-cache-action'
+  release:
+    name: Release changes
+    runs-on: ubuntu-22.04
+    permissions: 
+      packages: write
+      contents: write
+      pull-requests: write
+
+    steps: 
+    - name: Run Auto release
+      run: |
+        npx auto init
+        npx auto create-labels
+        npx auto shipit
+      env: 
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
