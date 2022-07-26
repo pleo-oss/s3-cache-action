@@ -15,24 +15,10 @@ concurrency:
 
 jobs:
     release-title:
-        permissions: write-all
-
         name: Check PR labels for release type
         runs-on: ubuntu-22.04
 
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-
-            - name: Ensure release labels
-              run: |
-                  npx auto create-labels
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
             - name: Verify PR labels
               uses: docker://agilepathway/pull-request-label-checker:latest
               with:
