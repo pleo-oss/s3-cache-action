@@ -15,8 +15,7 @@ concurrency:
 
 jobs:
     release-title:
-        permissions:
-            contents: write
+        permissions: write-all
 
         name: Check PR labels for release type
         runs-on: ubuntu-22.04
