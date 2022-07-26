@@ -1,54 +1,54 @@
 name: Pull Request Check
 on:
-  pull_request:
-      types:
-      - opened
-      - edited
-      - reopened
-      - synchronize
-      - labeled
-      - unlabeled
+    pull_request:
+        types:
+            - opened
+            - edited
+            - reopened
+            - synchronize
+            - labeled
+            - unlabeled
 
 concurrency:
-  group: actions-ci-${{ github.ref }}
-  cancel-in-progress: true
+    group: actions-ci-${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  release-title:
-    name: Check PR labels for release type
-    runs-on: ubuntu-22.04
+    release-title:
+        name: Check PR labels for release type
+        runs-on: ubuntu-22.04
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      
-      - name: Verify PR labels
-        uses: docker://agilepathway/pull-request-label-checker:latest
-        with:
-          one_of: major,minor,patch,internal
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
-  test:
-    name: Check
-    runs-on: ubuntu-22.04
+            - name: Verify PR labels
+              uses: docker://agilepathway/pull-request-label-checker:latest
+              with:
+                  one_of: major,minor,patch,internal
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
 
-    permissions:
-        contents: read
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
-        with:
-            node-version: '16.x'
-            registry-url: 'https://registry.npmjs.org'
-            cache: 'yarn'
+    test:
+        name: Check
+        runs-on: ubuntu-22.04
 
-      - run: yarn --frozen-lockfile
-      - run: make test
-      - run: make build
-      - run: make lint
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: '16.x'
+                  registry-url: 'https://registry.npmjs.org'
+                  cache: 'yarn'
 
-      - name: Check if built version was committed
-        run: |
-            git diff --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)
+            - run: yarn --frozen-lockfile
+            - run: make test
+            - run: make build
+            - run: make lint
+
+            - name: Check if built version was committed
+              run: |
+                  git diff --exit-code || (echo "::error::You forgot to commit the built actions, run 'make' locally" && exit 1)

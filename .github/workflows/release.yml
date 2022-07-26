@@ -1,25 +1,25 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  release:
-    name: Release changes
-    runs-on: ubuntu-22.04
-    permissions: 
-      packages: write
-      contents: write
-      pull-requests: write
+    release:
+        name: Release changes
+        runs-on: ubuntu-22.04
+        permissions:
+            packages: write
+            contents: write
+            pull-requests: write
 
-    steps: 
-    - name: Run Auto release
-      run: |
-        npx auto init
-        npx auto create-labels
-        npx auto shipit
-      env: 
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Run Auto release
+              run: |
+                  npx auto init
+                  npx auto create-labels
+                  npx auto shipit
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
