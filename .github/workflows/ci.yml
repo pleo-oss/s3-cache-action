@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   release-title:
-    name: Check PR labels for release Type
+    name: Check PR labels for release type
     runs-on: ubuntu-22.04
 
     steps:
