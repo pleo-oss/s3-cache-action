@@ -32,6 +32,7 @@ jobs:
                   npx auto create-labels
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Verify PR labels
               uses: docker://agilepathway/pull-request-label-checker:latest
