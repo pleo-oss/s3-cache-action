@@ -33,8 +33,8 @@ allow to read and write to the S3 bucket provided as input. Use the
 `aws-actions/configure-aws-credentials` action in a step prior to running this action to ensure
 that's the case.
 
-Note that the action requires `actions/checkout` to be run before it is invoked. 
-This is required in order to determine the repo state.
+Note that the action requires `actions/checkout` to be run before it is invoked. This is required in
+order to determine the repo state.
 
 <!-- action-docs-inputs -->
 

@@ -1,0 +1,14 @@
+---
+version: 1
+service:
+    name: S3 Cache Action
+    lifecycle: generally_available
+    owner: web-core
+    language: TypeScript
+    description: |-
+        Allows to skip a job if it already succeeded for the same repo state. Uses S3 for caching.
+    aliases:
+        - s3_cache_action
+    tags:
+        - key: type
+          value: library
